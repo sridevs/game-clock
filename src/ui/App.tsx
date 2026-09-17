@@ -41,7 +41,7 @@ export function App({ repository, now = Date.now }: Props) {
   function endTurn() {
     if (now() - lastTurn.current < 500) return;
     lastTurn.current = now();
-    act(clock => clock.active.expired ? clock.passExpired() : clock.endTurn(now()));
+    act(clock => clock.completeTurn(now()));
   }
 
   function reset() {
@@ -52,8 +52,8 @@ export function App({ repository, now = Date.now }: Props) {
   return <main>
     <header><span className="logo">S</span><span>SARKAR <span className="muted">/ GAME CLOCK</span></span></header>
     {error && <p role="alert">{error}</p>}
-    {game ? <GameBoard game={game} onTurn={endTurn}
-      onToggle={() => act(clock => clock.running ? clock.pause(now()) : clock.start(now()))}
+    {game ? <GameBoard view={game.view()} onTurn={endTurn}
+      onToggle={() => act(clock => clock.toggle(now()))}
       onReset={() => { act(clock => clock.pause(now())); setResetting(true); }} /> : <Setup onCreate={create} />}
     {resetting && <ResetDialog onCancel={() => setResetting(false)} onConfirm={reset} />}
     <footer>Made for the table. No accounts. No tracking.</footer>

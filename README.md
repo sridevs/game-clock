@@ -18,7 +18,9 @@ npm run build
 - `PlayerClock` owns remaining/elapsed time and budget behavior.
 - `GameClock` owns turn order, timestamps, pause, increment, expiry and snapshots. The caller supplies time for deterministic tests.
 - `GameRepository` is the persistence boundary; `LocalGameRepository` implements browser storage.
-- React components render models and dispatch actions. They do not calculate clock rules.
+- `GameClock.view()` returns a detached, deeply frozen display DTO; mutable player models never escape the aggregate. Serialization snapshots remain separate from display data.
+- React components render the display DTO and dispatch `toggle`, `completeTurn`, and `pause` commands. Turn and expiry decisions belong to the game model.
+- RTL behavior tests assert visible outcomes and accessible controls rather than inspecting model fields.
 - Vitest exercises models and storage; React Testing Library exercises user-facing controls.
 
 No Redux, router, server or accounts. Plain CSS. Small methods and composition rather than an inheritance hierarchy. Only completed turns receive an increment. Expired players cannot gain time; passing an expired player keeps the game paused. Opening reset pauses play; cancel preserves the paused game. A 500ms guard rejects accidental double taps.

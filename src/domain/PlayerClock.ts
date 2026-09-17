@@ -4,16 +4,15 @@ export class PlayerClock {
   private remaining: number;
   private elapsed: number;
 
-  constructor(readonly name: string, remainingMs: number, elapsedMs = 0) {
+  constructor(private readonly name: string, remainingMs: number, elapsedMs = 0) {
     if (!name.trim() || !Number.isFinite(remainingMs) || remainingMs < 0 ||
         !Number.isFinite(elapsedMs) || elapsedMs < 0) throw new Error('Invalid player clock');
     this.remaining = remainingMs;
     this.elapsed = elapsedMs;
   }
 
-  get remainingMs() { return this.remaining; }
-  get elapsedMs() { return this.elapsed; }
-  get expired() { return this.remaining === 0; }
+  hasExpired() { return this.remaining === 0; }
+  elapsedTime() { return this.elapsed; }
 
   consume(milliseconds: number) {
     const spent = Math.min(this.remaining, Math.max(0, milliseconds));
@@ -22,7 +21,7 @@ export class PlayerClock {
   }
 
   reward(milliseconds: number) {
-    if (!this.expired) this.remaining += milliseconds;
+    if (!this.hasExpired()) this.remaining += milliseconds;
   }
 
   snapshot(): PlayerData {

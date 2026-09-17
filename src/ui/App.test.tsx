@@ -35,11 +35,13 @@ it('runs, adds one increment, blocks rapid repeat taps and pauses', () => {
   act(() => { vi.advanceTimersByTime(5_000); });
   fireEvent.click(screen.getByRole('button', { name: 'End turn' }));
   fireEvent.click(screen.getByRole('button', { name: 'End turn' }));
-  expect(repository.load()?.turn).toBe(2);
-  expect(repository.load()?.players[0].remainingMs).toBe(65_000);
+  expect(screen.getByText('Turn 2 · Running')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'End turn' })).toHaveTextContent('B');
+  expect(screen.getByText('01:05')).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
   act(() => { vi.advanceTimersByTime(5_000); });
-  expect(repository.load()?.players[1].remainingMs).toBe(60_000);
+  expect(screen.getByRole('button', { name: 'End turn' })).toHaveTextContent('01:00');
+  expect(screen.getByRole('button', { name: 'End turn' })).toBeDisabled();
 });
 
 it('preserves the paused game on cancel and clears it only on confirmation', async () => {
@@ -47,10 +49,11 @@ it('preserves the paused game on cancel and clears it only on confirmation', asy
   await user.click(screen.getByRole('button', { name: 'Reset game' }));
   expect(screen.getByRole('dialog')).toBeVisible();
   await user.click(screen.getByRole('button', { name: 'Keep game' }));
-  expect(repository.load()).not.toBeNull();
+  expect(screen.getByRole('button', { name: 'End turn' })).toHaveTextContent('A');
   await user.click(screen.getByRole('button', { name: 'Reset game' }));
   await user.click(screen.getByRole('button', { name: 'Confirm reset' }));
-  expect(repository.load()).toBeNull(); expect(screen.getByText('Set the table.')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'End turn' })).not.toBeInTheDocument();
+  expect(screen.getByText('Set the table.')).toBeVisible();
 });
 
 it('recovers a running game after remount', () => {

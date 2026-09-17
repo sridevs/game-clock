@@ -6,13 +6,27 @@ export interface GameData {
   activeIndex: number; turn: number; running: boolean; lastAt: number | null;
 }
 
+export interface GameView {
+  readonly name: string;
+  readonly players: readonly Readonly<PlayerData>[];
+  readonly activePlayer: Readonly<PlayerData>;
+  readonly activeIndex: number;
+  readonly turn: number;
+  readonly running: boolean;
+  readonly incrementMs: number;
+  readonly elapsedMs: number;
+  readonly expired: boolean;
+  readonly canEndTurn: boolean;
+  readonly canToggle: boolean;
+}
+
 export class GameClock {
   private index = 0;
   private turnCount = 1;
   private ticking = false;
   private lastAt: number | null = null;
 
-  private constructor(readonly name: string, readonly players: readonly PlayerClock[], readonly incrementMs: number) {}
+  private constructor(private readonly name: string, private readonly players: readonly PlayerClock[], private readonly incrementMs: number) {}
 
   static create(config: GameConfig) {
     if (!config.name.trim() || config.names.length < 2 || config.names.length > 8 ||
@@ -38,14 +52,26 @@ export class GameClock {
     return game;
   }
 
-  get active() { return this.players[this.index]; }
-  get activeIndex() { return this.index; }
-  get turn() { return this.turnCount; }
-  get running() { return this.ticking; }
-  get elapsedMs() { return this.players.reduce((total, p) => total + p.elapsedMs, 0); }
+  private get active() { return this.players[this.index]; }
+
+  view(): GameView {
+    const players = Object.freeze(this.players.map(player => Object.freeze(player.snapshot())));
+    const expired = this.active.hasExpired();
+    return Object.freeze({ name: this.name, players, activePlayer: players[this.index],
+      activeIndex: this.index, turn: this.turnCount, running: this.ticking,
+      incrementMs: this.incrementMs, elapsedMs: this.players.reduce((total, p) => total + p.elapsedTime(), 0),
+      expired, canEndTurn: this.ticking || expired, canToggle: !expired });
+  }
+
+  toggle(now: number) { this.ticking ? this.pause(now) : this.start(now); }
+
+  completeTurn(now: number) {
+    if (this.active.hasExpired()) this.passExpired();
+    else this.endTurn(now);
+  }
 
   start(now: number) {
-    if (this.ticking || this.active.expired) return;
+    if (this.ticking || this.active.hasExpired()) return;
     this.ticking = true;
     this.lastAt = now;
   }
@@ -54,7 +80,7 @@ export class GameClock {
     if (!this.ticking || this.lastAt === null) return;
     this.active.consume(now - this.lastAt);
     this.lastAt = Math.max(now, this.lastAt);
-    if (this.active.expired) this.stop();
+    if (this.active.hasExpired()) this.stop();
   }
 
   pause(now: number) { this.tick(now); this.stop(); }
@@ -65,11 +91,11 @@ export class GameClock {
     if (!this.ticking) return;
     this.active.reward(this.incrementMs);
     this.advance();
-    if (this.active.expired) this.stop();
+    if (this.active.hasExpired()) this.stop();
   }
 
   passExpired() {
-    if (!this.ticking && this.active.expired) this.advance();
+    if (!this.ticking && this.active.hasExpired()) this.advance();
   }
 
   snapshot(): GameData {
