@@ -1,0 +1,46 @@
+.table-app{max-width:760px;color:#f3f4f2;letter-spacing:0}
+.table-app *{letter-spacing:0}
+.table-app header{margin-bottom:24px}
+.table-app h1{font-size:40px;line-height:1.15;overflow-wrap:anywhere}
+.table-app .game-title{font-size:30px;max-width:100%;margin:0}
+.table-app input,.table-app button,.table-app select,.table-app dialog{border-radius:8px}
+.table-app button{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px}
+.table-app .table-modes{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #56615c;margin-bottom:28px;gap:8px}
+.table-modes button{border:0;background:transparent;border-bottom:3px solid transparent;border-radius:0}
+.table-modes button[aria-current]{border-color:#e7bd66;color:#f3d795}
+.table-modes small{font-size:11px}
+.table-app .section-heading{margin-bottom:28px}
+.table-app .section-heading h1{margin-top:8px}
+.table-app .table-setup form{gap:28px}
+.table-app fieldset{border-top:1px solid #46534b;padding-top:16px}
+.table-app legend{padding-right:12px;color:#d3dcd6}
+.player-count{margin-bottom:16px}
+.stepper{display:flex;gap:8px}.stepper button{width:52px;padding:0}
+.table-app .names{gap:16px}
+.table-app input{background:#101e19;border-color:#536159}
+.table-app .primary{background:#ecc879;color:#15231c}
+.table-clock{border:2px solid #70bfa0;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:348px;padding:24px 16px;text-align:center;background:#173e2f}
+.table-clock.amber{background:#3c341f;border-color:#e5bd60}
+.table-clock.red{background:#3f2027;border-color:#fa8d92;animation:border-breathe 3s ease-in-out infinite}
+.table-clock.bullet{background:#390e25;border-color:#d595bb}
+.table-clock.handoff{background:#192c36;border-color:#85bacd}
+.table-clock .clock-mode{font-size:13px;font-weight:800;display:flex;gap:10px;align-items:center}
+.bullet-motif{font-size:12px;color:#eea4c3}
+.table-clock .player-name{font-family:inherit;font-size:30px;margin:0;line-height:1.15;overflow-wrap:anywhere;width:100%;font-weight:700}
+.table-clock .digits{font-size:72px;line-height:1.1;max-width:100%;font-variant-numeric:tabular-nums}
+.table-clock .finish-turn{margin-top:10px;width:100%;max-width:380px;min-height:64px;font-size:18px}
+.table-badge{font-size:11px;font-weight:750;color:#ecc879;white-space:nowrap}
+.table-players{display:grid;gap:0;list-style:none;margin:0;padding:0}
+.table-players li{display:flex;align-items:center;gap:12px;padding:18px 6px;border-bottom:1px solid #4a5750;border-left:3px solid transparent}
+.table-players li.active{border-left-color:#ecc879;padding-left:12px;background:#ffffff05}
+.player-details{min-width:0;flex:1;display:grid;gap:5px}.player-details strong{overflow-wrap:anywhere}
+.player-details small{font-size:12px;line-height:1.4}
+.player-bank{display:grid;gap:5px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.player-bank small{font-size:11px}.player-bank strong{font-size:19px}
+.table-players .red .player-bank{color:#ffa4a4}.table-players .amber .player-bank{color:#edce83}.table-players .bullet .player-bank{color:#efa7ce}
+.table-app .new-game{justify-self:center;margin-top:12px}.legacy-resume{width:100%;margin-top:24px}.legacy-nav{max-width:680px;margin:auto;padding:16px}
+.table-app dialog{background:#1f2c26}.table-app dialog h2{margin-bottom:12px}
+@keyframes border-breathe{50%{box-shadow:0 0 0 4px #fa8d9233;border-color:#ffd1d4}}
+@media(prefers-reduced-motion:reduce){.table-clock.red{animation:none}}
+@media(max-width:480px){.table-app{padding:20px 14px}.table-modes button{flex-direction:column;gap:2px}.table-clock .digits{font-size:58px}.table-clock .player-name{font-size:26px}.table-players li{gap:8px}.player-bank strong{font-size:17px}.table-app .number{min-width:24px;height:24px}.player-details small{font-size:11px}.table-app .game-title{font-size:26px}}
+@media(max-width:360px){.table-app .names{grid-template-columns:1fr}.table-clock .digits{font-size:48px}}
